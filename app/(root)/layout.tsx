@@ -1,6 +1,5 @@
 import Footer from "@/components/footer";
-import Header from "@/components/shared";
-import { ShoppingCartIcon, UserIcon } from "lucide-react";
+import Header from "@/components/shared/header";
 
 export default function RootLayout({
   children,
