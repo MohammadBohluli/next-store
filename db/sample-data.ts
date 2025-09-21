@@ -1,4 +1,26 @@
+import { hashSync } from "bcrypt";
+
 const sampleData = {
+  users: [
+    {
+      name: "admin",
+      email: "admin@example.com",
+      password: hashSync("123456", 10),
+      role: "admin",
+    },
+    {
+      name: "user1",
+      email: "user1@example.com",
+      password: hashSync("123456", 10),
+      role: "user",
+    },
+    {
+      name: "user2",
+      email: "user2@example.com",
+      password: hashSync("123456", 10),
+      role: "user",
+    },
+  ],
   products: [
     {
       name: "Polo Sporting Stretch Shirt",
