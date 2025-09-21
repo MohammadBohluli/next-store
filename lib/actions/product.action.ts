@@ -1,11 +1,11 @@
+import { prisma } from "@/db/prisma";
 import { LATEST_PRODUCTS_LIMIT } from "../constants";
-import { PrismaClient } from "../generated/prisma";
 import { mapToPlainObj } from "../utils";
 
 export async function getLatestProducts() {
-  const db = new PrismaClient();
+  // const db = new PrismaClient();
 
-  const data = await db.product.findMany({
+  const data = await prisma.product.findMany({
     take: LATEST_PRODUCTS_LIMIT,
     orderBy: { createdAt: "desc" },
   });
