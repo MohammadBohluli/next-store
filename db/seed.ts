@@ -1,5 +1,5 @@
 import sampleData from "@/db/sample-data";
-import { PrismaClient } from "@/lib/generated/prisma";
+import { PrismaClient } from "@prisma/client";
 
 // how to run: `npx tsx ./db/seed`
 async function main() {
