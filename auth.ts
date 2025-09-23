@@ -1,12 +1,12 @@
 import { PrismaAdapter } from "@auth/prisma-adapter";
-import { compareSync } from "bcrypt";
 
-import NextAuth, { type NextAuthConfig } from "next-auth";
+import { compareSync } from "bcrypt-ts-edge";
+import NextAuth from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
+import { NextResponse } from "next/server";
 import { prisma } from "./db/prisma";
 
-// add type user to session and token
-export const config: NextAuthConfig = {
+export const { handlers, auth, signIn, signOut } = NextAuth({
   pages: {
     signIn: "/sign-in",
     error: "/sign-in",
@@ -78,7 +78,21 @@ export const config: NextAuthConfig = {
       }
       return token;
     },
-  },
-};
+    authorized: ({ request, auth }) => {
+      // check session cart cookie
 
-export const { handlers, auth, signIn, signOut } = NextAuth(config);
+      if (!request.cookies.get("sessionCartId")) {
+        const sessionCartId = crypto.randomUUID();
+        const newRequestHeaders = new Headers(request.headers);
+        const response = NextResponse.next({
+          request: { headers: newRequestHeaders },
+        });
+        console.log(sessionCartId);
+        response.cookies.set("sessionCartId", sessionCartId);
+        return response;
+      } else {
+        return true;
+      }
+    },
+  },
+});
