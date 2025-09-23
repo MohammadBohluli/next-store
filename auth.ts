@@ -87,7 +87,6 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         const response = NextResponse.next({
           request: { headers: newRequestHeaders },
         });
-        console.log(sessionCartId);
         response.cookies.set("sessionCartId", sessionCartId);
         return response;
       } else {

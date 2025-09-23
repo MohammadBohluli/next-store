@@ -22,7 +22,7 @@ const AddToCart = ({ item }: Props) => {
       return;
     }
 
-    toast(`${item.name} added to cart`, {
+    toast(resp.message, {
       action: <Button onClick={() => router.push("/cart")}>Go To Cart</Button>,
     });
   };
