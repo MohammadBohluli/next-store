@@ -104,8 +104,25 @@ export const authConfig: NextAuthConfig = {
       return token;
     },
     authorized: ({ request, auth }) => {
-      // check session cart cookie
+      // all path that we want to protected until user login
+      const protectedPath = [
+        /\/shipping-address/,
+        /\/payment-method/,
+        /\/place-order/,
+        /\/profile/,
+        /\/user\/(.*)/,
+        /\/order\/(.*)/,
+        /\/admin/,
+      ];
 
+      // Get pathname from the req URL object
+      const { pathname } = request.nextUrl;
+
+      // check user not authenticated and
+      // accessing a protected path and redircet sign-in page
+      if (!auth && protectedPath.some((p) => p.test(pathname))) return false;
+
+      // check session cart cookie
       if (!request.cookies.get("sessionCartId")) {
         const sessionCartId = crypto.randomUUID();
         const newRequestHeaders = new Headers(request.headers);
