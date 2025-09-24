@@ -4,6 +4,7 @@ import { NextAuthConfig } from "next-auth";
 import { compareSync } from "bcrypt-ts-edge";
 
 import CredentialsProvider from "next-auth/providers/credentials";
+import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
 import { prisma } from "./db/prisma";
 export const authConfig: NextAuthConfig = {
@@ -59,6 +60,7 @@ export const authConfig: NextAuthConfig = {
     },
     async jwt({ token, user, trigger, session }: any) {
       if (user) {
+        token.id = user.id;
         token.role = user.role;
 
         if (user.name === "NO_NAME") {
@@ -69,6 +71,29 @@ export const authConfig: NextAuthConfig = {
             where: { id: user.id },
             data: { name: token.name },
           });
+        }
+
+        if (trigger === "signIn" || trigger === "signUp") {
+          const cookieObj = await cookies();
+          const sessionCartId = cookieObj.get("sessionCartId")?.value;
+
+          if (sessionCartId) {
+            const sessionCart = await prisma.cart.findFirst({
+              where: { sessionCartId },
+            });
+
+            if (sessionCart) {
+              // delete current user cart
+              await prisma.cart.deleteMany({
+                where: { userId: user.id },
+              });
+            }
+            // assign new cart
+            await prisma.cart.update({
+              where: { id: sessionCart?.id },
+              data: { userId: user.id },
+            });
+          }
         }
       }
 
