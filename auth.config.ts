@@ -87,12 +87,12 @@ export const authConfig: NextAuthConfig = {
               await prisma.cart.deleteMany({
                 where: { userId: user.id },
               });
+              // assign new cart
+              await prisma.cart.update({
+                where: { id: sessionCart?.id },
+                data: { userId: user.id },
+              });
             }
-            // assign new cart
-            await prisma.cart.update({
-              where: { id: sessionCart?.id },
-              data: { userId: user.id },
-            });
           }
         }
       }
