@@ -42,7 +42,7 @@ const PaymentMethodForm = ({ preferredPaymentMethod }: Props) => {
         return;
       }
 
-      router.push("/palce-order");
+      router.push("/place-order");
     });
   }
   return (
