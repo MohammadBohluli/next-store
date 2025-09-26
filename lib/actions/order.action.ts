@@ -4,6 +4,7 @@ import { auth } from "@/auth";
 import { prisma } from "@/db/prisma";
 import { CartItem } from "@/types";
 import { isRedirectError } from "next/dist/client/components/redirect-error";
+import { mapToPlainObj } from "../utils";
 import { createOrderSchema } from "../validators";
 import { getMyCart } from "./cart.action";
 import { getUserById } from "./user.action";
@@ -95,4 +96,17 @@ export async function createOrder() {
 
     return { success: false, message: "user was not created" };
   }
+}
+
+export async function getOrderById(orderId: string) {
+  const data = await prisma.order.findFirst({
+    where: {
+      id: orderId,
+    },
+    include: {
+      OrderItem: true,
+      user: { select: { name: true, email: true } },
+    },
+  });
+  return mapToPlainObj(data);
 }
